@@ -1,0 +1,50 @@
+void dfs(int node ,int parent,  vector<int>adj[], vector<int>&vis , vector<int>& low , vector<int>& tin ,int timer, vector<int>& isartic)
+  {
+      vis[node]=1;
+      low[node]=tin[node]=timer++;
+      int child=0;
+      for(auto it:adj[node])
+      {
+          if(it==parent)
+          continue;
+          if(!vis[it])
+          {
+              dfs(it,node,adj,vis,low,tin,timer,isartic);
+              low[node]=min(low[node],low[it]);
+              if(low[it]>=tin[node] and parent!=-1)
+              isartic[node]=1;
+              child++;
+          }
+          else
+          {
+              low[node]=min(low[node],tin[it]);
+          }
+          if(parent==-1 and child>1)
+          isartic[node]=1;
+      }
+      
+  }
+    vector<int> articulationPoints(int V, vector<int>adj[]) {
+        // Code here
+        vector<int>isartic(V,0);
+        vector<int>vis(V,0);
+        vector<int>low(V,-1);
+        vector<int>tin(V,-1);
+        
+        for(int i=0;i<V;i++)
+        {
+            if(!vis[i])
+            dfs(i,-1,adj,vis,low,tin,0,isartic);
+        }
+        vector<int>ans;
+        for(int i=0;i<V;i++)
+        {
+            if(isartic[i])
+            ans.push_back(i);
+        }
+        if(ans.empty())
+        return {-1};
+        return ans;
+        
+    }
+    //articulation point are the nodes on whose removal the graph breaks into multiple components...
