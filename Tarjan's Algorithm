@@ -1,0 +1,36 @@
+int timer=1;
+    void dfs(int node , int par , vector<int>& vis , vector<int> adj[], vector<int>&time, vector<int>& low , 
+    vector<vector<int>>&bridge)
+    {
+        vis[node]=1;
+        time[node]=low[node]=timer;
+        timer++;
+        for(auto it:adj[node])
+        {
+            if(it==par) continue;
+            if(vis[it]==0)
+            {
+                dfs(it,node,vis,adj,time,low,bridge);
+                low[node]=min(low[it],low[node]);
+                if(low[it]>time[node])
+                bridge.push_back({it,node});
+            }
+            else
+            low[node]=min(low[it],low[node]);
+        }
+    }
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& con) {
+        vector<int>adj[n];
+        for(auto it:con)
+        {
+            adj[it[0]].push_back(it[1]);
+            adj[it[1]].push_back(it[0]);
+        }
+         vector<int>vis(n,0);
+        vector<int>time(n,0);
+        vector<int>low(n,0);
+        vector<vector<int>>bridge;
+        dfs(0,-1,vis,adj,time,low,bridge);
+        return bridge;
+    }
+    //To determine the bridges in the graph , bridges are the edges that if we remove that edge it the graph will break down into two or more components.....
