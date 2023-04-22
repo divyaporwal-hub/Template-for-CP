@@ -1,0 +1,20 @@
+vector<int>adj[200001];
+int up[200001][21];
+void binary_lifting(int src,int par)
+{
+    up[src][0]=par;
+    for(int i=1;i<20;i++)
+    {
+        if(up[src][i-1]!=-1)
+            up[src][i]=up[up[src][i-1]][i-1];
+        else
+            up[src][i]=-1;
+    }
+    for(int child:adj[src])
+    {
+        if(child!=par)
+        {
+            binary_lifting(child,src);
+        }
+    }
+}
