@@ -1,0 +1,40 @@
+vector<int>adj[200001];
+int up[200001][20];
+vector<int>depth(200001);
+void binary_lifting(int src,int par=-1)
+{
+    for(auto it:adj[src])
+    {
+        if(it==par)
+            continue;
+        depth[it]=depth[src]+1;
+        up[it][0]=src;
+        for(int j=1;j<=18;j++)
+        {
+            up[it][j]=up[up[it][j-1]][j-1];
+        }
+        binary_lifting(it,src);
+    }
+    
+}
+
+int LCA(int x, int y)
+{
+    if(x<y) swap(x,y);
+    int k=depth[x]-depth[y];
+    for(int i=18;i>=0;i--)
+    {
+        if((1&(k>>i))) x=up[x][i];
+    }
+    if(x==y)
+        return x;
+    for(int i=18;i>=0;i--)
+    {
+        if(up[x][i]!=up[y][i])
+        {
+            x=up[x][i];
+            y=up[y][i];
+        }
+    }
+    return up[x][0];
+}
